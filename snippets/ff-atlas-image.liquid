@@ -1,0 +1,12 @@
+{% case index %}
+  {% when 0 %}{% assign ff_position = '0% 0%' %}{% assign ff_extra = false %}
+  {% when 1 %}{% assign ff_position = '50% 0%' %}{% assign ff_extra = false %}
+  {% when 2 %}{% assign ff_position = '100% 0%' %}{% assign ff_extra = false %}
+  {% when 3 %}{% assign ff_position = '0% 100%' %}{% assign ff_extra = false %}
+  {% when 4 %}{% assign ff_position = '50% 100%' %}{% assign ff_extra = false %}
+  {% when 5 %}{% assign ff_position = '100% 100%' %}{% assign ff_extra = false %}
+  {% when 6 %}{% assign ff_position = '0% 0%' %}{% assign ff_extra = true %}
+  {% when 7 %}{% assign ff_position = '50% 0%' %}{% assign ff_extra = true %}
+  {% else %}{% assign ff_position = '100% 0%' %}{% assign ff_extra = true %}
+{% endcase %}
+<div class="part-image{% if ff_extra %} extra{% endif %}" role="img" aria-label="{{ label | escape }}" style="background-position:{{ ff_position }}"></div>

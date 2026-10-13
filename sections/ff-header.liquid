@@ -1,0 +1,42 @@
+{% assign all_parts_url = routes.all_products_collection_url %}
+{% assign guide_url = section.settings.guide_url %}
+{% if guide_url == blank %}{% assign guide_url = routes.root_url | append: '#workbench' %}{% endif %}
+<div class="announcement"><span>{{ section.settings.announcement | escape }}</span><div><a href="{{ guide_url }}">Measurement guide</a></div></div>
+<div class="shop-header">
+  <header class="site-header">
+    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home"><img src="{{ 'ff-logo.png' | asset_url }}" alt="{{ shop.name | escape }}" width="1210" height="960"></a>
+    <form class="header-search" role="search" action="{{ routes.search_url }}" method="get" aria-label="Search the parts catalog">
+      <input type="hidden" name="type" value="product">
+      <label class="sr-only" for="header-search">Search products</label>
+      <input id="header-search" name="q" type="search" value="{{ search.terms | escape }}" placeholder="Search tuners, bridges, pickups…" autocomplete="off">
+      <button type="submit" aria-label="Search catalog"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg></button>
+    </form>
+    <div class="header-actions">
+      <a class="header-help" href="{{ guide_url }}"><svg class="icon" aria-hidden="true"><use href="#i-ruler"/></svg><span>Part selection guide</span></a>
+      <a class="icon-button bag-button" href="{{ routes.cart_url }}" aria-label="Shopping bag, {{ cart.item_count }} items"><svg class="icon" aria-hidden="true"><use href="#i-bag"/></svg><span>{{ cart.item_count }}</span></a>
+      <button class="icon-button mobile-menu" type="button" data-menu-toggle aria-label="Browse all categories" aria-expanded="false" aria-controls="mega-menu"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+  <nav class="department-nav" aria-label="Shop departments"><div class="department-scroll">
+    <button type="button" data-menu-toggle aria-expanded="false" aria-controls="mega-menu"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg> All parts</button>
+    {% if section.settings.menu != blank %}
+      {% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title | escape }}</a>{% endfor %}
+    {% else %}
+      {% render 'ff-category-links' %}
+    {% endif %}
+  </div><a href="{{ guide_url }}" class="nav-guide">Selection guides ↗</a></nav>
+  <nav id="mega-menu" class="mega-menu" aria-label="All parts and subcategories" hidden>
+    <div class="mega-heading"><span>SHOP BY PART</span><button type="button" data-menu-close aria-label="Close categories"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="mega-categories">
+      {% if section.settings.menu != blank %}
+        {% for link in section.settings.menu.links %}<div class="mega-category"><a class="mega-title" href="{{ link.url }}">{{ link.title | escape }} ↗</a>{% for child in link.links %}<a href="{{ child.url }}">{{ child.title | escape }}</a>{% endfor %}</div>{% endfor %}
+      {% else %}
+        {% render 'ff-category-links', mega: true %}
+      {% endif %}
+    </div>
+    <div class="mega-footer"><a href="{{ all_parts_url }}">Browse all parts <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><span>Compare shape, dimensions and mounting details.</span><a href="{{ guide_url }}">Part selection guide ↗</a></div>
+  </nav>
+</div>
+{% schema %}
+{"name":"FretFuel header","settings":[{"type":"text","id":"announcement","label":"Announcement","default":"GUITAR & BASS REPLACEMENT PARTS"},{"type":"link_list","id":"menu","label":"Department menu"},{"type":"url","id":"guide_url","label":"Parts guide page"}]}
+{% endschema %}

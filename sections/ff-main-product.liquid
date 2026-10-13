@@ -1,0 +1,27 @@
+{% assign selected_variant = product.selected_or_first_available_variant %}
+<section class="wrap ff-product-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><a href="{{ routes.all_products_collection_url }}">Parts</a><span>/</span><span>{{ product.title | escape }}</span></nav>
+  <div class="ff-product-layout">
+    <div class="ff-product-gallery">
+      {% if product.featured_media %}{{ product.featured_media.preview_image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '400, 600, 800, 1200', class: 'ff-main-product-image', alt: product.title }}{% else %}<div class="ff-main-product-image ff-image-placeholder">Product image coming soon</div>{% endif %}
+      {% if product.media.size > 1 %}<div class="ff-product-thumbs">{% for media in product.media %}<a href="{{ media.preview_image | image_url: width: 1600 }}" target="_blank" rel="noopener" aria-label="Open image {{ forloop.index }} of {{ product.title | escape }}">{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: product.title }}</a>{% endfor %}</div>{% endif %}
+    </div>
+    <div class="ff-product-copy">
+      {% if product.metafields.custom.series.value != blank %}<p class="eyebrow">{{ product.metafields.custom.series.value | escape }} SERIES</p>{% endif %}
+      {% if selected_variant.sku != blank %}<p class="detail-reference">FRETFUEL {{ selected_variant.sku | escape }}</p>{% endif %}
+      <h1>{{ product.title | escape }}</h1>
+      <p class="detail-price">{{ selected_variant.price | money }}{% if selected_variant.compare_at_price > selected_variant.price %} <s>{{ selected_variant.compare_at_price | money }}</s>{% endif %}</p>
+      {% if product.description != blank %}<div class="detail-description rte">{{ product.description }}</div>{% endif %}
+      {% form 'product', product, class: 'ff-product-form' %}
+        {% if product.variants.size > 1 %}<label for="ProductVariant">Variant</label><select id="ProductVariant" name="id">{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}"{% if variant.id == selected_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }} — {{ variant.price | money }}{% unless variant.available %} · Sold out{% endunless %}</option>{% endfor %}</select>{% else %}<input type="hidden" name="id" value="{{ selected_variant.id }}">{% endif %}
+        <label for="ProductQuantity">Quantity</label><input id="ProductQuantity" name="quantity" type="number" value="1" min="1" max="99" inputmode="numeric">
+        <button class="button yellow" type="submit"{% unless selected_variant.available %} disabled{% endunless %}>{% if selected_variant.available %}Add to bag{% else %}Sold out{% endif %} <svg class="icon"><use href="#i-plus"/></svg></button>
+        {{ form | payment_terms }}
+      {% endform %}
+      {% if product.metafields.custom.key_dimension.value != blank %}<div class="detail-option"><span>Key dimension</span><strong>{{ product.metafields.custom.key_dimension.value | escape }}</strong></div>{% endif %}
+      {% if product.metafields.custom.finish.value != blank %}<div class="detail-option"><span>Finish</span><strong>{{ product.metafields.custom.finish.value | escape }}</strong></div>{% endif %}
+      <div class="detail-note">Check measurements, mounting positions and electrical specifications against the part on your instrument before ordering.</div>
+    </div>
+  </div>
+</section>
+{% schema %}{"name":"FretFuel product","settings":[]}{% endschema %}

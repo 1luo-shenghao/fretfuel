@@ -1,0 +1,17 @@
+{% assign ff_variant = product.selected_or_first_available_variant %}
+<article class="product-card">
+  <a class="product-image-button" href="{{ product.url }}" aria-label="View {{ product.title | escape }}">
+    {% if product.featured_image %}
+      {{ product.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '240, 360, 480, 640', class: 'ff-product-image', alt: product.title }}
+    {% else %}
+      <span class="ff-image-placeholder">Product image coming soon</span>
+    {% endif %}
+    {% if product.metafields.custom.series.value != blank %}<span class="series-tag">{{ product.metafields.custom.series.value | escape }}</span>{% endif %}
+    <span class="quick-view"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></span>
+  </a>
+  <div class="product-meta"><span>{% if ff_variant.sku != blank %}{{ ff_variant.sku | escape }}{% else %}{{ product.type | escape }}{% endif %}</span><span>{% if product.available %}IN STOCK{% else %}SOLD OUT{% endif %}</span></div>
+  <a class="product-name" href="{{ product.url }}">{{ product.title | escape }}</a>
+  <p class="product-spec">{% if product.metafields.custom.key_dimension.value != blank %}{{ product.metafields.custom.key_dimension.value | escape }}{% elsif product.type != blank %}{{ product.type | escape }}{% else %}Guitar & bass replacement part{% endif %}</p>
+  <div class="product-bottom"><span class="product-price">{{ product.price | money }}{% if product.price_varies %} <small>from</small>{% endif %}</span>{% if product.metafields.custom.finish.value != blank %}<span class="product-finish">{{ product.metafields.custom.finish.value | escape }}</span>{% endif %}</div>
+  <a class="product-cta" href="{{ product.url }}">View part <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+</article>
