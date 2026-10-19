@@ -1,10 +1,52 @@
 {% assign selected_variant = product.selected_or_first_available_variant %}
+{% assign initial_media = product.featured_media | default: product.media.first %}
+{% assign first_model = product.media | where: 'media_type', 'model' | first %}
+{% if first_model %}<link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css">{% endif %}
 <section class="wrap ff-product-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><a href="{{ routes.all_products_collection_url }}">Parts</a><span>/</span><span>{{ product.title | escape }}</span></nav>
   <div class="ff-product-layout">
-    <div class="ff-product-gallery">
-      {% if product.featured_media %}{{ product.featured_media.preview_image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '400, 600, 800, 1200', class: 'ff-main-product-image', alt: product.title }}{% else %}<div class="ff-main-product-image ff-image-placeholder">Product image coming soon</div>{% endif %}
-      {% if product.media.size > 1 %}<div class="ff-product-thumbs">{% for media in product.media %}<a href="{{ media.preview_image | image_url: width: 1600 }}" target="_blank" rel="noopener" aria-label="Open image {{ forloop.index }} of {{ product.title | escape }}">{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: product.title }}</a>{% endfor %}</div>{% endif %}
+    <div class="ff-product-gallery" data-ff-product-gallery>
+      {% if product.media.size > 0 %}
+        <div class="ff-product-media-stage" role="region" aria-label="Product media">
+          {% for media in product.media %}
+            {% assign media_alt = media.alt | default: product.title %}
+            {% assign media_loading = 'lazy' %}
+            {% if media.id == initial_media.id %}{% assign media_loading = 'eager' %}{% endif %}
+            <div class="ff-product-media-panel" id="ff-media-{{ section.id }}-{{ media.id }}" data-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}"{% unless media.id == initial_media.id %} hidden{% endunless %}>
+              {% case media.media_type %}
+                {% when 'image' %}
+                  {{ media | image_url: width: 1600 | image_tag: loading: media_loading, widths: '400, 600, 800, 1200, 1600', class: 'ff-main-product-image', alt: media_alt }}
+                {% when 'model', 'video', 'external_video' %}
+                  <button class="ff-media-activate" type="button" aria-label="{% if media.media_type == 'model' %}View 3D model{% else %}Play video{% endif %} of {{ product.title | escape }}">
+                    {{ media.preview_image | image_url: width: 1200 | image_tag: loading: media_loading, widths: '400, 600, 800, 1200', alt: media_alt }}
+                    <span class="ff-media-activate-label" aria-hidden="true">{% if media.media_type == 'model' %}View 3D model{% else %}Play video{% endif %}</span>
+                  </button>
+                  <template>
+                    {% case media.media_type %}
+                      {% when 'model' %}{{ media | model_viewer_tag: image_size: '1200x1200', toggleable: true }}
+                      {% when 'video' %}{{ media | video_tag: controls: true, preload: 'none', image_size: '1200x1200' }}
+                      {% when 'external_video' %}{{ media | external_video_url: autoplay: true | external_video_tag: loading: 'lazy' }}
+                    {% endcase %}
+                  </template>
+                {% else %}
+                  {{ media.preview_image | image_url: width: 1600 | image_tag: loading: media_loading, widths: '400, 600, 800, 1200, 1600', class: 'ff-main-product-image', alt: media_alt }}
+              {% endcase %}
+            </div>
+          {% endfor %}
+        </div>
+        {% if product.media.size > 1 %}
+          <div class="ff-product-thumbs" role="group" aria-label="Choose product media">
+            {% for media in product.media %}
+              {% assign media_label = 'image' %}
+              {% if media.media_type == 'model' %}{% assign media_label = '3D model' %}{% elsif media.media_type == 'video' or media.media_type == 'external_video' %}{% assign media_label = 'video' %}{% endif %}
+              <button type="button" class="ff-product-thumb" data-media-id="{{ media.id }}" aria-controls="ff-media-{{ section.id }}-{{ media.id }}" aria-label="Show {{ media_label }} {{ forloop.index }} of {{ product.title | escape }}" aria-pressed="{% if media.id == initial_media.id %}true{% else %}false{% endif %}">
+                {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                {% if media.media_type == 'model' %}<span class="ff-product-thumb-badge" aria-hidden="true">3D</span>{% elsif media.media_type == 'video' or media.media_type == 'external_video' %}<span class="ff-product-thumb-badge" aria-hidden="true">▶</span>{% endif %}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% else %}<div class="ff-main-product-image ff-image-placeholder">Product image coming soon</div>{% endif %}
     </div>
     <div class="ff-product-copy">
       {% if product.metafields.custom.series.value != blank %}<p class="eyebrow">{{ product.metafields.custom.series.value | escape }} SERIES</p>{% endif %}
