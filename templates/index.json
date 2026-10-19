@@ -107,9 +107,9 @@
         "components_title": "Controls, pickguards & hardware.",
         "components_collection": "",
         "hero_collection": "hero",
-        "stage_collection": "",
-        "black_collection": "",
-        "black_x_collection": ""
+        "stage_collection": "stage",
+        "black_collection": "black",
+        "black_x_collection": "black-x"
       }
     }
   },
