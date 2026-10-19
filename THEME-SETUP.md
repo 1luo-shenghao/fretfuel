@@ -6,7 +6,7 @@
 
 1. GitHub 同步方式：将本目录的 `assets`、`config`、`layout`、`locales`、`sections`、`snippets`、`templates` 放在仓库根目录。在 Shopify 后台的“在线商店 → 模板”中选择“从 GitHub 连接”，授权 Shopify GitHub 应用，选择仓库和 `main` 分支。先保留为未发布主题并预览。
 2. 也可以将本地的 `fretfuel-shopify.zip` 作为主题上传到 Shopify，或用 Shopify CLI 推送到开发店铺。GitHub 连接与 ZIP 上传二选一即可。
-3. 在店铺中添加真实商品、图片、变体和价格。首页默认读取“所有商品”；可以在主题编辑器中为精选商品和组件区域指定集合。
+3. 在店铺中添加真实商品、图片、变体和价格。若要展示可旋转的 3D 商品，在 Shopify 商品后台的媒体区上传 3D 模型，并确认媒体处理完成。商品页会显示带“3D”标记的缩略图；顾客选择后点击“View 3D model”即可旋转查看。单独上传封面图片不会产生 3D 模型。首页默认读取“所有商品”；可以在主题编辑器中为精选商品和组件区域指定集合。
 4. 首页九个分类块预设了集合 handle：`tuners`、`bass-tuners`、`bridges`、`tailpieces`、`pickups`、`electronics`、`pickguards`、`saddles`、`knobs`。创建对应集合，或在主题编辑器中逐项改选。未找到集合时链接回“所有商品”。
 5. 在页眉设置中可选一个 Shopify 导航菜单；没有指定时，导航会尝试使用 `tuners`、`bridges`、`pickups`、`electronics`、`pickguards`、`hardware` 集合。
 6. 如需独立选购指南，可创建一个页面并指定 `page.parts-guide` 模板，再将该页面设为页眉、页脚和首页的指南链接。不指定时，链接会跳到首页的指南区块。
