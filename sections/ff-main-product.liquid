@@ -3,7 +3,7 @@
 {% assign first_model = product.media | where: 'media_type', 'model' | first %}
 {% if first_model %}<link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css">{% endif %}
 <section class="wrap ff-product-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><a href="{{ routes.all_products_collection_url }}">Parts</a><span>/</span><span>{{ product.title | escape }}</span></nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span>/</span>{% if collection != blank %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a>{% else %}<a href="{{ routes.all_products_collection_url }}">Parts</a>{% endif %}<span>/</span><span>{{ product.title | escape }}</span></nav>
   <div class="ff-product-layout">
     <div class="ff-product-gallery" data-ff-product-gallery>
       {% if product.media.size > 0 %}
